@@ -106,23 +106,26 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--navy);
 .gap-hl-left{font-family:'Playfair Display',serif;font-size:clamp(28px,4vw,56px);font-weight:700;color:var(--navy);line-height:1.1;opacity:0.22;margin-bottom:32px;}
 .gap-vert-svg{display:block;margin:0 auto;width:4px;height:80px;overflow:visible;}
 
-/* #1 FIX: slow dashed line to exactly 3s, stroke-by-stroke feel */
+/* #1 FIX: stroke-by-stroke dashed line, 3s total */
 .gap-vert-path{
   stroke:var(--navy);
   stroke-width:2;
   stroke-linecap:round;
+  /* dasharray: dash length + gap length. Total path = 80px.
+     We use a large dashoffset to hide the line, then animate to 0 */
   stroke-dasharray:6 10;
   fill:none;
   opacity:0.4;
-  stroke-dashoffset:200;
+  /* path M2,0 L2,80 = exactly 80px total length */
+  stroke-dashoffset:80;
   transition:none;
 }
 .gap-vert-path.animate{
-  animation:drawDash 3s cubic-bezier(0.25,0.46,0.45,0.94) forwards;
+  animation:drawDash 3s linear forwards;
 }
 @keyframes drawDash{
-  from{stroke-dashoffset:200;}
-  to{stroke-dashoffset:0;}
+  from{ stroke-dashoffset:80; }
+  to{   stroke-dashoffset:0;  }
 }
 
 .gap-hl-right-wrap{display:flex;flex-direction:column;align-items:center;margin-top:32px;}
@@ -401,11 +404,12 @@ section{padding:100px 40px;}
     <div class="gap-eyebrow">/ THE REYSTONE GAP</div>
     <div class="gap-headline-wrap">
       <span class="gap-hl-left">Most companies are<br>building AI workflows —</span>
-      <svg class="gap-vert-svg" viewBox="0 0 4 80">
-        <line class="gap-vert-path" x1="2" y1="0" x2="2" y2="80"/>
+      <!-- #1 FIX: path (not line) so stroke-dashoffset works correctly -->
+      <svg class="gap-vert-svg" viewBox="0 0 4 80" xmlns="http://www.w3.org/2000/svg">
+        <path class="gap-vert-path" d="M2,0 L2,80"/>
       </svg>
-      <!-- #5: text starts hidden, fades in after line finishes -->
-      <div class="gap-hl-right-wrap" id="gapRightText">
+      <!-- #5 FIX: hidden at opacity:0, JS adds fade-in class after 3.5s -->
+      <div class="gap-hl-right-wrap">
         <span class="gap-hl-right" id="pilotModeText">they just never<br><em>leave pilot mode.</em></span>
       </div>
     </div>
@@ -413,8 +417,11 @@ section{padding:100px 40px;}
     <!-- #6: McKinsey styled wordmark -->
     <div class="gap-mckinsey-block anim anim-d2">
       <div style="flex-shrink:0;">
-        <div class="gap-mckinsey-wordmark">McKinsey<br>&amp; Company</div>
-        <div class="gap-mckinsey-tag">STATE OF AI, 2025</div>
+        <svg viewBox="0 0 170 40" xmlns="http://www.w3.org/2000/svg" style="height:32px;width:auto;display:block;">
+          <text x="0" y="22" font-family="Times New Roman, Times, serif" font-size="19" font-style="italic" font-weight="400" fill="#12185A" opacity="0.65">McKinsey</text>
+          <text x="0" y="37" font-family="Times New Roman, Times, serif" font-size="12" font-weight="400" fill="#12185A" opacity="0.55" letter-spacing="1">&amp; Company</text>
+        </svg>
+        <div class="gap-mckinsey-tag" style="margin-top:7px;">STATE OF AI, 2025</div>
       </div>
       <p class="gap-mckinsey-quote">"Nearly 9 in 10 organizations now deploy AI in at least one business function — yet two thirds remain trapped in experimentation, unable to scale a single workflow to enterprise impact."</p>
     </div>
@@ -461,7 +468,7 @@ section{padding:100px 40px;}
     <div class="eyebrow">/READY TO BUILD</div>
     <h2>AI that works<br>like <em>ten of you.</em></h2>
     <!-- #8: Updated copy -->
-    <p class="cta-sub">45 min with our Founder so we get to know your business and map out your biggest AI opportunities. No pitch, no pressure.</p>
+    <p class="cta-sub">45 min with our Founder. No pitch, no pressure, just introductions.</p>
     <div class="cta-row">
       <button class="btn-cream" onclick="openModal()" style="font-size:11px;padding:16px 36px;">Book Discovery Meeting →</button>
     </div>
@@ -491,7 +498,7 @@ section{padding:100px 40px;}
     <div>
       <div class="footer-col-label">CONTACT</div>
       <div class="footer-links">
-        <a href="mailto:hello@reystone.ai">hello@reystone.ai</a>
+        <a href="/cdn-cgi/l/email-protection#9df5f8f1f1f2ddeff8e4eee9f2f3f8b3fcf4"><span class="__cf_email__" data-cfemail="157d7079797a5567706c66617a7b703b747c">[email&#160;protected]</span></a>
         <a href="#" onclick="openModal();return false;">Book Discovery Meeting</a>
       </div>
       <div class="footer-col-label" style="margin-top:28px;">HOUSTON, TX</div>
@@ -500,7 +507,7 @@ section{padding:100px 40px;}
   <p class="footer-copy">© 2026 ReyStone AI Consultancy · Houston, Texas · Built by humans, powered by AI</p>
 </footer>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // Calendly
 function openModal(){
   if(typeof Calendly!=='undefined'){
@@ -590,13 +597,3 @@ if(vertPath && gapTopEl){
     });
   }, {threshold:0.3});
   gapObserver.observe(gapTopEl);
-}
-
-// Nav shadow
-window.addEventListener('scroll', () => {
-  const shadow = window.scrollY > 10 ? '0 2px 16px rgba(18,24,90,0.08)' : 'none';
-  document.querySelector('.floating-cta').style.boxShadow = shadow;
-});
-</script>
-</body>
-</html>
