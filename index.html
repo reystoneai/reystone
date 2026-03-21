@@ -451,11 +451,7 @@ footer{background:var(--cream);border-top:1px solid rgba(18,24,90,0.1);padding:5
   padding-left:180px;
   padding-right:180px;
 }
-@media(max-width:768px){
-  #top-nav,#top-nav.nav-centered{padding-left:0;padding-right:0;justify-content:center;}
-  .floating-logo{top:12px;left:12px;}
-  .floating-logo .logo{height:20px;}
-  /* ── MOBILE HAMBURGER ──────────────────────────────── */
+/* ── MOBILE HAMBURGER ──────────────────────────────── */
 .nav-hamburger{
   display:none;
   position:fixed;top:16px;right:16px;z-index:600;
@@ -504,11 +500,13 @@ footer{background:var(--cream);border-top:1px solid rgba(18,24,90,0.1);padding:5
 .nav-mob-link:hover,.nav-mob-link.active{background:rgba(237,234,222,0.08);color:var(--cream);}
 .nav-mob-link.active{background:var(--cream);color:var(--navy);}
 @media(max-width:768px){
+  #top-nav,#top-nav.nav-centered{padding-left:0;padding-right:0;justify-content:center;}
+  .floating-logo{top:12px;left:12px;}
+  .floating-logo .logo{height:20px;}
   .nav-pill{display:none !important;}
   .nav-hamburger{display:flex;}
   .nav-mobile-menu{display:flex;}
-}
-.nav-pill{margin-top:10px;padding:5px 6px;max-width:calc(100vw - 24px);}
+  .nav-pill{margin-top:10px;padding:5px 6px;max-width:calc(100vw - 24px);}
   .nav-link{font-size:9px;padding:8px 12px;letter-spacing:0.08em;white-space:nowrap;}
 }
 @media(max-width:390px){
