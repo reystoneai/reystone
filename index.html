@@ -13,7 +13,7 @@
 :root{--navy:#12185A;--cream:#EDEADE;--green:#1D9E75;}
 *{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
-html,body{max-width:100%;overflow-x:hidden;}body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--navy);}
+html,body{max-width:100%;overflow-x:hidden;-webkit-overflow-scrolling:touch;}body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--navy);}
 
 /* ── LOGO ─────────────────────────────────────────── */
 .logo{height:auto;display:block;}
@@ -151,7 +151,16 @@ html,body{max-width:100%;overflow-x:hidden;}body{font-family:'DM Sans',sans-seri
 .why-hed{font-family:'Playfair Display',serif;font-size:clamp(28px,3.5vw,52px);font-weight:700;color:var(--cream);text-align:center;max-width:700px;margin:0 auto 80px;line-height:1.15;}
 .why-hed em{font-style:italic;}
 .why-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:60px;max-width:900px;margin:0 auto;}
-@media(max-width:768px){.why-stats{grid-template-columns:1fr;gap:36px;}}
+@media(max-width:768px){
+  .why-stats{grid-template-columns:1fr;gap:36px;}
+  /* override group reveal — individual fade on mobile */
+  .why-stats.reveal{opacity:1 !important;transform:none !important;transition:none !important;}
+  .why-stat{opacity:0;transform:translateY(20px);transition:opacity 0.7s ease,transform 0.7s ease;}
+  .why-stat.mob-visible{opacity:1;transform:translateY(0);}
+  /* pilot text also fades on mobile */
+  .gap-hl-bot{opacity:0;transform:translateY(10px);transition:opacity 0.6s ease,transform 0.6s ease;}
+  .gap-hl-bot.show{opacity:1;transform:translateY(0);}
+}
 .why-stat{text-align:center;cursor:default;}
 .why-stat-num{font-family:'Playfair Display',serif;font-size:clamp(64px,8vw,110px);font-weight:700;color:rgba(237,234,222,0.25);line-height:1;margin-bottom:16px;display:block;transition:color 0.35s ease;}
 .why-stat:hover .why-stat-num{color:rgba(237,234,222,1);}
@@ -442,10 +451,65 @@ footer{background:var(--cream);border-top:1px solid rgba(18,24,90,0.1);padding:5
   #top-nav,#top-nav.nav-centered{padding-left:0;padding-right:0;justify-content:center;}
   .floating-logo{top:12px;left:12px;}
   .floating-logo .logo{height:20px;}
+  /* ── MOBILE HAMBURGER ──────────────────────────────── */
+.nav-hamburger{
+  display:none;
+  position:fixed;top:16px;right:16px;z-index:600;
+  width:44px;height:44px;
+  background:rgba(18,24,90,0.92);
+  backdrop-filter:blur(12px);
+  border:none;border-radius:10px;
+  flex-direction:column;align-items:center;justify-content:center;
+  gap:5px;cursor:pointer;
+  opacity:0;transform:translateY(-8px);
+  transition:opacity 0.35s ease,transform 0.35s ease;
+  pointer-events:none;
 }
-@media(max-width:480px){
-  .nav-link{font-size:7px;padding:6px 8px;letter-spacing:0.08em;}
-  .nav-pill{padding:4px 5px;margin-top:10px;max-width:90vw;gap:0;}
+.nav-hamburger.show{opacity:1;transform:translateY(0);pointer-events:auto;}
+.nav-hamburger span{
+  display:block;width:20px;height:2px;
+  background:var(--cream);border-radius:2px;
+  transition:transform 0.25s ease,opacity 0.25s ease;
+}
+.nav-hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.nav-hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0);}
+.nav-hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+/* Mobile dropdown menu */
+.nav-mobile-menu{
+  display:none;
+  position:fixed;top:68px;right:16px;z-index:590;
+  background:rgba(18,24,90,0.97);
+  backdrop-filter:blur(16px);
+  border:1px solid rgba(237,234,222,0.12);
+  border-radius:14px;
+  padding:8px;min-width:210px;
+  flex-direction:column;gap:2px;
+  opacity:0;transform:translateY(-10px) scale(0.97);
+  transition:opacity 0.2s ease,transform 0.2s ease;
+  pointer-events:none;
+}
+.nav-mobile-menu.open{opacity:1;transform:translateY(0) scale(1);pointer-events:auto;}
+.nav-mob-link{
+  font-family:'Fragment Mono',monospace;
+  font-size:11px;letter-spacing:0.14em;text-transform:uppercase;
+  color:rgba(237,234,222,0.65);
+  text-decoration:none;padding:14px 20px;
+  border-radius:8px;display:block;
+  transition:background 0.15s,color 0.15s;
+}
+.nav-mob-link:hover,.nav-mob-link.active{background:rgba(237,234,222,0.08);color:var(--cream);}
+.nav-mob-link.active{background:var(--cream);color:var(--navy);}
+@media(max-width:768px){
+  .nav-pill{display:none !important;}
+  .nav-hamburger{display:flex;}
+  .nav-mobile-menu{display:flex;}
+}
+.nav-pill{margin-top:10px;padding:5px 6px;max-width:calc(100vw - 24px);}
+  .nav-link{font-size:9px;padding:8px 12px;letter-spacing:0.08em;white-space:nowrap;}
+}
+@media(max-width:390px){
+  .nav-link{font-size:8px;padding:7px 9px;letter-spacing:0.06em;}
+  .nav-pill{padding:4px 4px;gap:1px;}
 }
 .nav-pill{
   display:flex;align-items:center;gap:2px;
@@ -524,6 +588,15 @@ footer{background:var(--cream);border-top:1px solid rgba(18,24,90,0.1);padding:5
     <a class="nav-link" id="nav-contact" href="#" onclick="showPage('contact');return false;">Contact</a>
   </div>
 </nav>
+<!-- MOBILE HAMBURGER -->
+<button class="nav-hamburger" id="navHamburger" aria-label="Open menu" onclick="toggleMobileMenu()">
+  <span></span><span></span><span></span>
+</button>
+<div class="nav-mobile-menu" id="navMobileMenu">
+  <a class="nav-mob-link active" id="nav-mob-main" href="#" onclick="showPage('main');closeMobileMenu();return false;">Main</a>
+  <a class="nav-mob-link" id="nav-mob-cases" href="#" onclick="showPage('cases');closeMobileMenu();return false;">Adaption Cases</a>
+  <a class="nav-mob-link" id="nav-mob-contact" href="#" onclick="showPage('contact');closeMobileMenu();return false;">Contact</a>
+</div>
 
 
 <!-- FLOATING LOGO -->
@@ -634,17 +707,17 @@ footer{background:var(--cream);border-top:1px solid rgba(18,24,90,0.1);padding:5
     <span class="why-eyebrow">/ WHY NOW</span>
     <h2 class="why-hed reveal">While you read this,<br>your competitor's AI<br><em>just lapped you.</em></h2>
     <div class="why-stats reveal d1">
-      <div class="why-stat">
+      <div class="why-stat" id="whyStat0">
         <span class="why-stat-num">54%</span>
         <p class="why-stat-label">of CEOs believe their company won't survive past 2030 without AI</p>
         <span class="why-stat-source">MERCER GLOBAL TALENT TRENDS, 2025</span>
       </div>
-      <div class="why-stat">
+      <div class="why-stat" id="whyStat1">
         <span class="why-stat-num">91%</span>
         <p class="why-stat-label">of AI-using businesses report revenue increases — growing firms are 1.8x more likely to invest in AI</p>
         <span class="why-stat-source">McKINSEY, 2024</span>
       </div>
-      <div class="why-stat">
+      <div class="why-stat" id="whyStat2">
         <span class="why-stat-num">3.5x</span>
         <p class="why-stat-label">faster revenue growth for companies with fully integrated AI operations</p>
         <span class="why-stat-source">HARVARD BUSINESS REVIEW, 2024</span>
@@ -760,6 +833,28 @@ const revealObs = new IntersectionObserver(entries => {
 }, {threshold:0.08});
 document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
 
+// ── Mobile: why-stats fade in one by one ──────────────────
+if(window.innerWidth <= 768){
+  [0,1,2].forEach(i => {
+    const stat = document.getElementById('whyStat'+i);
+    if(!stat) return;
+    new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if(e.isIntersecting){
+          setTimeout(() => stat.classList.add('mob-visible'), i * 280);
+        }
+      });
+    }, {threshold:0.25}).observe(stat);
+  });
+  // Pilot text explicit mobile observer
+  const pilotEl = document.getElementById('pilotText');
+  if(pilotEl){
+    new IntersectionObserver(entries => {
+      entries.forEach(e => { if(e.isIntersecting) pilotEl.classList.add('show'); });
+    }, {threshold:0.2}).observe(pilotEl);
+  }
+}
+
 // ── Process card stagger ─────────────────────────────
 const cardObs = new IntersectionObserver(entries => {
   entries.forEach(e => {
@@ -855,6 +950,8 @@ function showPage(page){
     if(el) el.style.display = (p === page) ? 'block' : 'none';
     const nav = document.getElementById('nav-' + p);
     if(nav){ nav.classList.toggle('active', p === page); }
+    const mobNav = document.getElementById('nav-mob-' + p);
+    if(mobNav){ mobNav.classList.toggle('active', p === page); }
   });
   window.scrollTo(0,0);
   if(page === 'blog' && typeof renderBlogGrid === 'function') renderBlogGrid('all');
@@ -892,6 +989,49 @@ window.addEventListener('scroll', () => {
   lastScrollY = currentScrollY;
 });
 setTimeout(() => { if(navPill) navPill.classList.add('show'); }, 600);
+
+// ── Mobile hamburger: show after scrolling past hero for 1s ──
+function toggleMobileMenu(){
+  const btn = document.getElementById('navHamburger');
+  const menu = document.getElementById('navMobileMenu');
+  if(!btn||!menu) return;
+  btn.classList.toggle('open');
+  menu.classList.toggle('open');
+}
+function closeMobileMenu(){
+  const btn = document.getElementById('navHamburger');
+  const menu = document.getElementById('navMobileMenu');
+  if(btn) btn.classList.remove('open');
+  if(menu) menu.classList.remove('open');
+}
+// Close menu when tapping outside
+document.addEventListener('click', e => {
+  const btn = document.getElementById('navHamburger');
+  const menu = document.getElementById('navMobileMenu');
+  if(btn && menu && !btn.contains(e.target) && !menu.contains(e.target)){
+    btn.classList.remove('open');
+    menu.classList.remove('open');
+  }
+});
+(function(){
+  const heroEl2 = document.getElementById('hero');
+  let burgerTimer = null;
+  window.addEventListener('scroll', () => {
+    if(window.innerWidth > 768) return;
+    const burger = document.getElementById('navHamburger');
+    if(!burger) return;
+    const heroBottom = heroEl2 ? heroEl2.getBoundingClientRect().bottom : 0;
+    if(heroBottom < 0){
+      if(!burgerTimer){
+        burgerTimer = setTimeout(() => { burger.classList.add('show'); }, 1000);
+      }
+    } else {
+      clearTimeout(burgerTimer); burgerTimer = null;
+      burger.classList.remove('show');
+      closeMobileMenu();
+    }
+  });
+})();
 // Hash routing for /blog
 if(window.location.hash === '#blog') showPage('blog');
 window.addEventListener('hashchange', () => {
@@ -905,18 +1045,48 @@ window.addEventListener('hashchange', () => {
 /* ══ ADAPTION CASES v2 ══════════════════════════════════════ */
 #cases-section{background:var(--cream);padding:120px 40px 100px;min-height:100vh;}
 @media(max-width:768px){
-  #cases-section{padding:80px 16px 60px;}
-  .cases-inner{width:100%;padding:0;}
-  .wf-phases-v2{grid-template-columns:1fr;gap:8px;}
-  .sw-grid-v2{grid-template-columns:repeat(2,1fr);}
-  .compare-wrap-v2{grid-template-columns:1fr;}
+  #cases-section{padding:72px 12px 60px;}
+  .cases-inner{width:100%;padding:0;overflow-x:hidden;}
+  .case-card-v2{border-radius:12px;overflow:hidden;}
+  /* Stat tiles: stack and enable tap-to-flip on mobile */
   .stat-strip{grid-template-columns:1fr;}
-  .stat-tile+.stat-tile{margin-top:0;}
-  .acc-head{padding:16px 20px;}
-  .acc-inner{padding:6px 20px 28px;}
-  .case-hdr-v2{padding:24px 20px;}
-  .case-outcome-v2{padding:24px 20px 20px;}
-  .cases-tab-btn{padding:12px 18px;font-size:8px;}
+  .stat-tile{height:110px;}
+  .stat-tile+.stat-tile{margin-top:8px;}
+  .stat-num{font-size:clamp(22px,7vw,34px);}
+  .stat-tile-back{font-size:12px;padding:12px;}
+  /* Tab buttons */
+  .cases-tab-btn{padding:10px 14px;font-size:10px;letter-spacing:0.04em;}
+  .cases-tab-tooltip{display:none;}
+  /* Accordion */
+  .acc-head{padding:14px 16px;gap:8px;}
+  .acc-title{font-size:14px;}
+  .acc-inner{padding:4px 16px 24px;}
+  .acc-icon-wrap{width:28px;height:28px;flex-shrink:0;}
+  /* Case header */
+  .case-hdr-v2{padding:20px 16px;gap:12px;}
+  .case-title-v2{font-size:clamp(14px,4vw,18px);}
+  .case-outcome-v2{padding:20px 16px 16px;}
+  .outcome-head{font-size:clamp(14px,4vw,18px);}
+  .outcome-body{font-size:14px;}
+  /* Phase grid */
+  .wf-phases-v2{grid-template-columns:1fr;gap:8px;}
+  .wf-phase-title-v2{font-size:13px;}
+  /* Tech stack */
+  .sw-grid-v2{grid-template-columns:repeat(2,1fr);}
+  /* Compare */
+  .compare-wrap-v2{grid-template-columns:1fr;}
+  .cmp-col{padding:16px 14px;}
+  .cmp-big{font-size:26px;}
+  .cmp-list li{font-size:11.5px;}
+  /* Investment table */
+  .invest-tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .invest-tbl{min-width:340px;}
+  .invest-tbl td,.invest-tbl th{padding:8px 10px;font-size:12px;}
+  /* Next case CTA */
+  .next-case-cta{padding:28px 0 4px;}
+}
+@media(max-width:480px){
+  .sw-grid-v2{grid-template-columns:1fr;}
 }
 .cases-inner{max-width:1120px;margin:0 auto;}
 .cases-eyebrow{font-family:'Fragment Mono',monospace;font-size:9px;letter-spacing:0.28em;text-transform:uppercase;color:var(--navy);opacity:0.4;margin-bottom:20px;display:block;}
@@ -1126,7 +1296,7 @@ window.addEventListener('hashchange', () => {
             <svg class="acc-chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="var(--navy)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </div>
           <div class="acc-body"><div class="acc-inner">
-            <table class="invest-tbl">
+            <div class="invest-tbl-wrap"><table class="invest-tbl">
               <tr><th>Service</th><th class="invest-price-v2">Investment</th></tr>
               <tr><td>Reystone AI Roadmap</td><td class="invest-price-v2">$2,500</td></tr>
               <tr><td>Reystone AI Strategy (Autonomous 6-Hour Content Loop)</td><td class="invest-price-v2">$4,500</td></tr>
@@ -1136,7 +1306,7 @@ window.addEventListener('hashchange', () => {
               <tr><td>Software stack (ongoing)</td><td class="invest-price-v2">$280–370/mo</td></tr>
               <tr><td colspan="2"></td></tr>
               <tr><td><strong>Total One-Time AI Investment</strong></td><td class="invest-price-v2"><strong>$29,250</strong></td></tr>
-            </table>
+            </table></div>
           </div></div>
         </div>
       </div>
@@ -1234,7 +1404,7 @@ window.addEventListener('hashchange', () => {
             <svg class="acc-chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="var(--navy)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </div>
           <div class="acc-body"><div class="acc-inner">
-            <table class="invest-tbl">
+            <div class="invest-tbl-wrap"><table class="invest-tbl">
               <tr><th>Service</th><th class="invest-price-v2">Investment</th></tr>
               <tr><td>Reystone AI Roadmap</td><td class="invest-price-v2">$2,500</td></tr>
               <tr><td>Reystone AI Strategy (Lead Harvesting Architecture)</td><td class="invest-price-v2">$3,000</td></tr>
@@ -1244,7 +1414,7 @@ window.addEventListener('hashchange', () => {
               <tr><td>Software stack (ongoing)</td><td class="invest-price-v2">$242–322/mo</td></tr>
               <tr><td colspan="2"></td></tr>
               <tr><td><strong>Total One-Time AI Investment</strong></td><td class="invest-price-v2"><strong>$15,000</strong></td></tr>
-            </table>
+            </table></div>
           </div></div>
         </div>
       </div>
@@ -1263,6 +1433,14 @@ function toggleAcc(head){
   head.classList.toggle('open',!isOpen);
   body.style.maxHeight=isOpen?'0':body.scrollHeight+'px';
 }
+// Tap-to-flip stat tiles on touch devices
+document.querySelectorAll('.stat-tile').forEach(tile => {
+  tile.addEventListener('click', () => {
+    tile.querySelector('.stat-tile-inner').style.transform =
+      tile.querySelector('.stat-tile-inner').style.transform === 'rotateY(180deg)'
+        ? '' : 'rotateY(180deg)';
+  });
+});
 function togglePhaseV2(phase){
   const isExp=phase.classList.contains('expanded');
   phase.classList.toggle('expanded',!isExp);
@@ -1278,12 +1456,14 @@ function togglePhaseV2(phase){
 </div>
 
 <!-- ══ CONTACT ════════════════════════════════════════════════ -->
-<div id="page-contact" style="display:none;background:var(--navy);">
+<div id="page-contact" style="display:none;background:var(--navy);overflow-x:hidden;">
 <style>
-#contact-section{background:var(--navy);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:120px 40px;}
+#contact-section{background:var(--navy);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:120px 40px;;overflow-x:hidden;}
 @media(max-width:768px){
-  #contact-section{padding:80px 24px;}
-  .contact-inner{padding:0 16px;}
+  #contact-section{padding:72px 16px 60px;overflow-x:hidden;}
+  .contact-inner{padding:0;width:100%;max-width:100%;}
+  .contact-hed{font-size:clamp(28px,8vw,48px);}
+  .contact-sub{font-size:15px;margin-bottom:36px;}
 }
 /* Contact form */
 .contact-form{width:100%;margin-bottom:40px;text-align:left;}
@@ -1298,6 +1478,11 @@ function togglePhaseV2(phase){
 .cf-input:focus{border-color:rgba(237,234,222,0.4);}
 .cf-textarea{min-height:100px;resize:vertical;}
 .cf-submit{font-size:11px;padding:16px 36px;margin-top:8px;width:100%;text-align:center;cursor:pointer;}
+@media(max-width:600px){
+  #contactForm input,#contactForm textarea{width:100% !important;min-width:0 !important;box-sizing:border-box !important;font-size:16px !important;}
+  #contactForm>div[style*="flex"]{flex-wrap:wrap !important;}
+  #contactForm>div>div[style*="flex:1"]{flex:1 1 100% !important;min-width:0 !important;}
+}
 @media(max-width:768px){#contact-section{padding:80px 24px;}}
 .contact-inner{max-width:640px;margin:0 auto;text-align:center;}
 .contact-eyebrow{font-family:'Fragment Mono',monospace;font-size:9px;letter-spacing:0.28em;text-transform:uppercase;color:rgba(237,234,222,0.35);margin-bottom:20px;display:block;}
@@ -1323,25 +1508,25 @@ function togglePhaseV2(phase){
       <div style="display:flex;gap:14px;flex-wrap:wrap;">
         <div style="flex:1;min-width:140px;display:flex;flex-direction:column;margin-bottom:14px;">
           <label style="font-family:'Fragment Mono',monospace;font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(237,234,222,0.4);margin-bottom:6px;">First Name <span style="color:rgba(237,234,222,0.2);">optional</span></label>
-          <input type="text" name="firstName" placeholder="Pia" style="background:rgba(255,255,255,0.05);border:1px solid rgba(237,234,222,0.15);border-radius:6px;padding:12px 14px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--cream);outline:none;">
+          <input type="text" name="firstName" placeholder="Pia" style="background:rgba(255,255,255,0.05);border:1px solid rgba(237,234,222,0.15);border-radius:6px;padding:12px 14px;font-family:'DM Sans',sans-serif;font-size:16px;color:var(--cream);outline:none;">
         </div>
         <div style="flex:1;min-width:140px;display:flex;flex-direction:column;margin-bottom:14px;">
           <label style="font-family:'Fragment Mono',monospace;font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(237,234,222,0.4);margin-bottom:6px;">Last Name <span style="color:rgba(237,234,222,0.2);">optional</span></label>
-          <input type="text" name="lastName" placeholder="Van Rey" style="background:rgba(255,255,255,0.05);border:1px solid rgba(237,234,222,0.15);border-radius:6px;padding:12px 14px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--cream);outline:none;">
+          <input type="text" name="lastName" placeholder="Van Rey" style="background:rgba(255,255,255,0.05);border:1px solid rgba(237,234,222,0.15);border-radius:6px;padding:12px 14px;font-family:'DM Sans',sans-serif;font-size:16px;color:var(--cream);outline:none;">
         </div>
       </div>
       <div style="display:flex;flex-direction:column;margin-bottom:14px;">
         <label style="font-family:'Fragment Mono',monospace;font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(237,234,222,0.4);margin-bottom:6px;">Company</label>
-        <input type="text" name="company" id="cf-company" placeholder="Your Company" style="background:rgba(255,255,255,0.05);border:1px solid rgba(237,234,222,0.15);border-radius:6px;padding:12px 14px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--cream);outline:none;">
+        <input type="text" name="company" id="cf-company" placeholder="Your Company" style="background:rgba(255,255,255,0.05);border:1px solid rgba(237,234,222,0.15);border-radius:6px;padding:12px 14px;font-family:'DM Sans',sans-serif;font-size:16px;color:var(--cream);outline:none;">
       </div>
       <div style="display:flex;gap:14px;flex-wrap:wrap;">
         <div style="flex:1;min-width:140px;display:flex;flex-direction:column;margin-bottom:14px;">
           <label style="font-family:'Fragment Mono',monospace;font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(237,234,222,0.4);margin-bottom:6px;">Phone <span style="color:rgba(237,234,222,0.2);">optional</span></label>
-          <input type="tel" name="phone" placeholder="+1 (713) 000-0000" style="background:rgba(255,255,255,0.05);border:1px solid rgba(237,234,222,0.15);border-radius:6px;padding:12px 14px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--cream);outline:none;">
+          <input type="tel" name="phone" placeholder="+1 (713) 000-0000" style="background:rgba(255,255,255,0.05);border:1px solid rgba(237,234,222,0.15);border-radius:6px;padding:12px 14px;font-family:'DM Sans',sans-serif;font-size:16px;color:var(--cream);outline:none;">
         </div>
         <div style="flex:1;min-width:140px;display:flex;flex-direction:column;margin-bottom:14px;">
           <label style="font-family:'Fragment Mono',monospace;font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(237,234,222,0.4);margin-bottom:6px;">Email</label>
-          <input type="email" name="email" id="cf-email" placeholder="you@company.com" style="background:rgba(255,255,255,0.05);border:1px solid rgba(237,234,222,0.15);border-radius:6px;padding:12px 14px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--cream);outline:none;">
+          <input type="email" name="email" id="cf-email" placeholder="you@company.com" style="background:rgba(255,255,255,0.05);border:1px solid rgba(237,234,222,0.15);border-radius:6px;padding:12px 14px;font-family:'DM Sans',sans-serif;font-size:16px;color:var(--cream);outline:none;">
         </div>
       </div>
       <div style="display:flex;flex-direction:column;margin-bottom:20px;">
