@@ -2144,13 +2144,13 @@ function submitContactForm(e){
       company: company.value.trim(),
       phone: e.target.phone ? e.target.phone.value.trim() : '',
       email: email.value.trim(),
-      message: e.target.message ? e.target.message.value.trim() : ''
+      message: e.target.message ? e.target.message.value.trim() : '',
+      redirect: 'https://reystone.ai/thankyou.html?firstName=' + encodeURIComponent(e.target.firstName ? e.target.firstName.value.trim() : '')
     })
   }).then(r => r.json()).then(data => {
     if(data.success){
-      e.target.style.display = 'none';
-      const successEl = document.getElementById('cf-success');
-      if(successEl) successEl.style.display = 'block';
+      var fn = e.target.firstName ? e.target.firstName.value.trim() : '';
+      window.location.href = 'https://reystone.ai/thankyou.html?firstName=' + encodeURIComponent(fn);
     } else {
       if(errEl){ errEl.textContent = 'Something went wrong. Please email hey@reystone.ai directly.'; errEl.style.display = 'block'; }
     }
