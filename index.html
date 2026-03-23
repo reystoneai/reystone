@@ -979,13 +979,19 @@ window.addEventListener('popstate', e => {
   const page = (e.state && e.state.page) ? e.state.page : 'main';
   showPage(page, false);
 });
-// Route on initial load based on URL path
+// Route on initial load based on URL path (with GitHub Pages 404.html SPA fallback)
 (function(){
-  const path = window.location.pathname;
-  const pathToPage = {'/casestudies':'cases','/contact':'contact','/blog':'blog'};
-  const initPage = pathToPage[path] || 'main';
-  if(initPage !== 'main') showPage(initPage, false);
-  else history.replaceState({page:'main'}, document.title, '/');
+  var params = new URLSearchParams(window.location.search);
+  var redirectPath = params.get('p');
+  var path = redirectPath || window.location.pathname;
+  var pathToPage = {'/casestudies':'cases','/contact':'contact','/blog':'blog'};
+  var initPage = pathToPage[path] || 'main';
+  if(initPage !== 'main'){
+    history.replaceState({page:initPage}, document.title, path);
+    showPage(initPage, false);
+  } else {
+    history.replaceState({page:'main'}, document.title, '/');
+  }
 })();
 
 // Navbar: top-right on load, hide at 10% scroll, center on scroll up
@@ -1664,8 +1670,10 @@ function togglePhaseV2(phase){
     <h2 class="contact-hed">This one's<br><em>human to human.</em></h2>
     <p class="contact-sub">45 minutes to map out where AI can move the needle for you - and for you to ask all your Q's</p>
 
-    <form id="contactForm" name="contact" novalidate onsubmit="submitContactForm(event)" style="width:100%;text-align:left;margin-bottom:36px;">
-      <input type="hidden" name="form-name" value="contact">
+    <form id="contactForm" action="https://api.web3forms.com/submit" method="POST" novalidate onsubmit="submitContactForm(event)" style="width:100%;text-align:left;margin-bottom:36px;">
+      <input type="hidden" name="access_key" value="959ea2db-d71a-4b47-b88c-719d525faadd">
+      <input type="hidden" name="subject" value="New inquiry from reystone.ai">
+      <input type="hidden" name="from_name" value="Reystone Contact Form">
       <div style="display:flex;gap:14px;flex-wrap:wrap;">
         <div style="flex:1;min-width:140px;display:flex;flex-direction:column;margin-bottom:14px;">
           <label style="font-family:'Fragment Mono',monospace;font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(237,234,222,0.4);margin-bottom:6px;">First Name <span style="color:rgba(237,234,222,0.2);">optional</span></label>
@@ -2123,12 +2131,11 @@ function submitContactForm(e){
     return;
   }
   if(errEl) errEl.style.display = 'none';
-  // POST to Formspree
+  // POST to Web3Forms
   const formData = new FormData(e.target);
-  fetch('https://formspree.io/f/mojkzjpv', {
+  fetch('https://api.web3forms.com/submit', {
     method: 'POST',
-    body: formData,
-    headers: { 'Accept': 'application/json' }
+    body: formData
   }).then(res => {
     if(res.ok){
       e.target.style.display = 'none';
