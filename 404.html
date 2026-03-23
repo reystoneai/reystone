@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Reystone AI</title>
+  <script>
+    // GitHub Pages SPA fix: redirect unknown paths back to index.html
+    // preserving the route so the SPA router can pick it up
+    var segment = window.location.pathname;
+    window.location.replace('/?p=' + encodeURIComponent(segment));
+  </script>
+</head>
+<body></body>
+</html>
