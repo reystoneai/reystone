@@ -988,7 +988,8 @@ window.addEventListener('popstate', e => {
   showPage(page, false);
 });
 // Route on initial load based on URL path (with GitHub Pages 404.html SPA fallback)
-(function(){
+// Deferred until DOM is ready so all page divs exist
+function _initRoute(){
   var params = new URLSearchParams(window.location.search);
   var redirectPath = params.get('p');
   var path = redirectPath || window.location.pathname;
@@ -1000,7 +1001,12 @@ window.addEventListener('popstate', e => {
   } else {
     history.replaceState({page:'main'}, document.title, '/');
   }
-})();
+}
+if(document.readyState === 'loading'){
+  document.addEventListener('DOMContentLoaded', _initRoute);
+} else {
+  _initRoute();
+}
 
 // Navbar: top-right on load, hide at 10% scroll, center on scroll up
 const topNav = document.getElementById('top-nav');
