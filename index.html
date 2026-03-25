@@ -1002,11 +1002,8 @@ function _initRoute(){
     history.replaceState({page:'main'}, document.title, '/');
   }
 }
-if(document.readyState === 'loading'){
-  document.addEventListener('DOMContentLoaded', _initRoute);
-} else {
-  _initRoute();
-}
+// Wait for full page load (all scripts parsed) before routing
+window.addEventListener('load', _initRoute);
 
 // Navbar: top-right on load, hide at 10% scroll, center on scroll up
 const topNav = document.getElementById('top-nav');
@@ -1356,6 +1353,7 @@ document.addEventListener('click', e => {
     <div class="cases-tab-bar" role="tablist">
       <button class="cases-tab-btn active" onclick="switchCase(0)" role="tab">Case 01 — Content Command Center<span class="cases-tab-tooltip">Autonomous social media content production, every 8 hours</span></button>
       <button class="cases-tab-btn" onclick="switchCase(1)" role="tab">Case 02 — Lead Harvesting Engine<span class="cases-tab-tooltip">Automated lead harvesting from job listing data</span></button>
+      <button class="cases-tab-btn" onclick="switchCase(2)" role="tab">Case 03 — Inbox Intelligence System<span class="cases-tab-tooltip">AI-powered Gmail triage and response automation</span></button>
     </div>
     <div class="cases-tab-desc visible" id="caseTabDesc">Autonomous social media content production, every 8 hours</div>
     </div>
@@ -1573,12 +1571,120 @@ document.addEventListener('click', e => {
           </div></div>
         </div>
       </div>
+      <!-- Next case CTA -->
+      <div class="next-case-cta">
+        <div class="next-case-arrow">↓</div>
+        <button class="btn-next-case" onclick="switchCase(2);document.getElementById('cases-section').scrollIntoView({behavior:'smooth'});">Read next Case Study →</button>
+      </div>
+    </div>
+
+
+    <!-- ── CASE PANEL 03 ── -->
+    <div class="case-panel" id="casePanel2">
+      <div class="stat-strip">
+        <div class="stat-tile"><div class="stat-tile-inner"><div class="stat-tile-front"><div class="stat-num"><em>520</em> hrs</div></div><div class="stat-tile-back">Annual hours reclaimed</div></div></div>
+        <div class="stat-tile"><div class="stat-tile-inner"><div class="stat-tile-front"><div class="stat-num">$<em>49,920</em><span style="font-size:0.52em;font-weight:400;">/yr</span></div></div><div class="stat-tile-back">CEO time recovered</div></div></div>
+        <div class="stat-tile"><div class="stat-tile-inner"><div class="stat-tile-front"><div class="stat-num"><em>2,773</em>%</div></div><div class="stat-tile-back">ROI year one</div></div></div>
+      </div>
+      <div class="case-card-v2">
+        <div class="case-hdr-v2">
+          <span class="case-num-v2">CASE 03</span>
+          <div class="case-title-v2">Inbox Intelligence System — AI-Powered Gmail Triage &amp; Response Automation</div>
+        </div>
+        <div class="case-outcome-v2">
+          <h3 class="outcome-head">A scaling CEO was spending 2 hours a day on email — reading, sorting, drafting, flagging, and filing. At end of Q1, hiring an assistant felt like a problem on top of a problem. We built an Inbox Intelligence System instead.</h3>
+          <p class="outcome-body">A Gmail Trigger node fires every time a new email arrives and pulls the full content — subject, sender, body, thread history. Every email passes to Claude via a Basic LLM Chain node. A Structured Output Parser ensures clean output. Claude classifies each email into five categories: urgent / partner / admin / noise / prospect. High-value emails are labeled in Gmail and pushed to Slack with a one-line AI summary. Claude drafts a reply in the CEO's voice using previous thread context. Every Friday at 4pm, a weekly digest delivers priority conversations, follow-ups, and action items. One human step: review, adjust, send.</p>
+        </div>
+        <!-- Accordion: What We Built -->
+        <div class="acc">
+          <div class="acc-head" onclick="toggleAcc(this)">
+            <div class="acc-left">
+              <div class="acc-icon-wrap" style="background:rgba(29,158,117,0.08);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5z" stroke="var(--green)" stroke-width="1.5" stroke-linejoin="round"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5" stroke="var(--green)" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+              <div class="acc-meta"><span class="acc-tag">/ Deep Dive</span><span class="acc-title">What We Built</span></div>
+            </div>
+            <svg class="acc-chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="var(--navy)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="acc-body"><div class="acc-inner">
+            <h3 style="font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:var(--navy);margin-bottom:8px;">Inbox Intelligence Workflow — triggered on every inbound email, 24/7</h3>
+            <p style="font-size:14px;font-weight:300;line-height:1.82;color:rgba(18,24,90,0.6);margin-bottom:20px;">Built on n8n with Gmail API and Claude (Anthropic) as the intelligence layer. The system classifies, summarizes, drafts, and digests — reducing a 2-hour daily email load to a 10-minute review.</p>
+            <div class="wf-phases-v2">
+              <div class="wf-phase-v2"><div class="wf-phase-head" onclick="togglePhaseV2(this.parentElement)"><div class="wf-phase-head-left"><span class="wf-phase-num">PHASE 1 — INGEST</span><div class="wf-phase-title-v2">Gmail Trigger &amp; Content Extraction</div></div><span class="wf-phase-plus">+</span></div><div class="wf-phase-body"><p class="wf-phase-desc-v2">A Gmail Trigger node fires on every new email, pulling subject, sender, body, and full thread history. The raw content is passed to Claude for classification.</p></div></div>
+              <div class="wf-phase-v2"><div class="wf-phase-head" onclick="togglePhaseV2(this.parentElement)"><div class="wf-phase-head-left"><span class="wf-phase-num">PHASE 2 — CLASSIFY</span><div class="wf-phase-title-v2">AI Triage &amp; Categorization</div></div><span class="wf-phase-plus">+</span></div><div class="wf-phase-body"><p class="wf-phase-desc-v2">Claude classifies each email into five categories — urgent, partner, admin, noise, prospect — using a Structured Output Parser for clean, consistent output. High-value emails are labeled in Gmail and pushed to Slack with a one-line AI summary.</p></div></div>
+              <div class="wf-phase-v2"><div class="wf-phase-head" onclick="togglePhaseV2(this.parentElement)"><div class="wf-phase-head-left"><span class="wf-phase-num">PHASE 3 — DRAFT</span><div class="wf-phase-title-v2">AI Response Generation</div></div><span class="wf-phase-plus">+</span></div><div class="wf-phase-body"><p class="wf-phase-desc-v2">Claude drafts a reply in the CEO's voice using previous thread context and tone matching. The draft is staged in Gmail — one human step: review, adjust, send.</p></div></div>
+              <div class="wf-phase-v2"><div class="wf-phase-head" onclick="togglePhaseV2(this.parentElement)"><div class="wf-phase-head-left"><span class="wf-phase-num">PHASE 4 — DIGEST</span><div class="wf-phase-title-v2">Weekly Priority Report</div></div><span class="wf-phase-plus">+</span></div><div class="wf-phase-body"><p class="wf-phase-desc-v2">Every Friday at 4pm, a scheduled workflow compiles the week's priority conversations, pending follow-ups, and action items into a structured digest — delivered to Slack or email.</p></div></div>
+            </div>
+          </div></div>
+        </div>
+        <!-- Accordion: Tech Stack -->
+        <div class="acc">
+          <div class="acc-head" onclick="toggleAcc(this)">
+            <div class="acc-left">
+              <div class="acc-icon-wrap" style="background:rgba(18,24,90,0.05);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" stroke="var(--navy)" stroke-width="1.5"/><path d="M8 21h8M12 17v4" stroke="var(--navy)" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+              <div class="acc-meta"><span class="acc-tag">/ Tools</span><span class="acc-title">Tech Stack</span></div>
+            </div>
+            <svg class="acc-chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="var(--navy)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="acc-body"><div class="acc-inner">
+            <p style="font-size:13px;font-weight:300;color:rgba(18,24,90,0.5);margin-bottom:16px;">Tools powering the Inbox Intelligence System:</p>
+            <div class="sw-grid-v2">
+              <div class="sw-card-v2"><div class="sw-name-v2">n8n</div><div class="sw-desc-v2">Workflow orchestration &amp; scheduling</div></div>
+              <div class="sw-card-v2"><div class="sw-name-v2">Gmail API</div><div class="sw-desc-v2">Email trigger, labeling &amp; draft staging</div></div>
+              <div class="sw-card-v2"><div class="sw-name-v2">Anthropic Claude</div><div class="sw-desc-v2">Classification, summarization &amp; reply drafting</div></div>
+              <div class="sw-card-v2"><div class="sw-name-v2">Slack</div><div class="sw-desc-v2">Real-time alerts &amp; weekly digest delivery</div></div>
+              <div class="sw-total-v2"><div class="sw-name-v2">Build Investment</div><div class="sw-total-price">$1,800</div><div class="sw-total-period">one-time build — equivalent to $49,920/yr in recovered CEO time</div></div>
+            </div>
+          </div></div>
+        </div>
+        <!-- Accordion: vs. Without AI -->
+        <div class="acc">
+          <div class="acc-head" onclick="toggleAcc(this)">
+            <div class="acc-left">
+              <div class="acc-icon-wrap" style="background:rgba(192,57,43,0.06);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 3v18M3 12h18" stroke="#C0392B" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/></svg></div>
+              <div class="acc-meta"><span class="acc-tag">/ ROI</span><span class="acc-title">vs. Without AI</span></div>
+            </div>
+            <svg class="acc-chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="var(--navy)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="acc-body"><div class="acc-inner">
+            <p style="font-size:14px;font-weight:300;line-height:1.8;color:rgba(18,24,90,0.6);margin-bottom:20px;">Harvard tracked 60,000 hours of CEO behavior and found email was the single biggest non-strategic time sink in the C-suite. We fixed it in one afternoon.</p>
+            <div class="compare-wrap-v2">
+              <div class="cmp-col cmp-before"><span class="cmp-lbl">Without AI</span><div class="cmp-big">$49,920/yr</div><div class="cmp-desc">CEO time burned on email — 2 hours/day at $96/hr effective rate:</div><ul class="cmp-list"><li>520 hours/year reading, sorting, drafting, flagging</li><li>High-value decisions delayed by inbox noise</li><li>No triage system — every email treated equally</li><li>Follow-ups slip through the cracks weekly</li><li>Hiring an EA adds $45K–$65K/yr + management overhead</li></ul></div>
+              <div class="cmp-col cmp-after"><span class="cmp-lbl">With Reystone AI</span><div class="cmp-big">$1,800</div><div class="cmp-desc">One-time build. AI handles triage, drafting, and digest — CEO reviews only what matters:</div><ul class="cmp-list"><li>Every email classified in seconds — urgent, partner, admin, noise, prospect</li><li>High-priority items pushed to Slack instantly</li><li>AI drafts replies in the CEO's voice and tone</li><li>Weekly digest with action items every Friday</li><li>2,773% ROI in year one</li><li>No ongoing salary. No management. No sick days.</li></ul></div>
+            </div>
+          </div></div>
+        </div>
+        <!-- Accordion: The Investment -->
+        <div class="acc">
+          <div class="acc-head" onclick="toggleAcc(this)">
+            <div class="acc-left">
+              <div class="acc-icon-wrap" style="background:rgba(18,24,90,0.05);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" stroke="var(--navy)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <div class="acc-meta"><span class="acc-tag">/ Pricing</span><span class="acc-title">The Investment</span></div>
+            </div>
+            <svg class="acc-chevron" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="var(--navy)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="acc-body"><div class="acc-inner">
+            <div class="invest-tbl-wrap"><table class="invest-tbl">
+              <tr><th>Service</th><th class="invest-price-v2">Investment</th></tr>
+              <tr><td>Reystone AI Roadmap &amp; Email Workflow Audit</td><td class="invest-price-v2">$500</td></tr>
+              <tr><td>Reystone AI Strategy (Inbox Intelligence Architecture)</td><td class="invest-price-v2">$400</td></tr>
+              <tr><td>Reystone AI Workflow Implementation — Gmail triage, drafting &amp; digest</td><td class="invest-price-v2">$700</td></tr>
+              <tr><td>Reystone AI Voice Training &amp; Tone Calibration</td><td class="invest-price-v2">$200</td></tr>
+              <tr><td colspan="2"></td></tr>
+              <tr><td><strong>Total One-Time AI Investment</strong></td><td class="invest-price-v2"><strong>$1,800</strong></td></tr>
+            </table></div>
+          </div></div>
+        </div>
+      </div>
+      <!-- Next case CTA -->
+      <div class="next-case-cta">
+        <div class="next-case-arrow">↓</div>
+        <button class="btn-next-case" onclick="switchCase(0);document.getElementById('cases-section').scrollIntoView({behavior:'smooth'});">Read next Case Study →</button>
+      </div>
     </div>
 
   </div>
 </section>
 <script>
-const _caseDescs = ['Autonomous social media content production, every 8 hours', 'Automated lead harvesting from job listing data'];
+const _caseDescs = ['Autonomous social media content production, every 8 hours', 'Automated lead harvesting from job listing data', 'AI-powered Gmail triage and response automation for a scaling CEO'];
 function switchCase(idx){
   document.querySelectorAll('.case-panel').forEach((p,i)=>p.classList.toggle('active',i===idx));
   document.querySelectorAll('.cases-tab-btn').forEach((b,i)=>b.classList.toggle('active',i===idx));
