@@ -969,13 +969,18 @@ function showPage(page, pushState=true){
     if(mobNav){ mobNav.classList.toggle('active', p === page); }
   });
   window.scrollTo(0,0);
-  // Hide desktop nav pill when changing pages (only show via scroll on main)
-  if(navPill) navPill.classList.remove('show');
+  // Briefly hide nav pill then re-show after page switch
+  if(navPill){
+    navPill.classList.remove('show');
+    setTimeout(() => { navPill.classList.add('show'); }, 120);
+  }
   if(typeof window._updateBurger === 'function') setTimeout(window._updateBurger, 50);
   // Update URL
   if(pushState){
-    const url = _urlMap[page] || '/';
-    history.pushState({page}, document.title, url);
+    try {
+      const url = _urlMap[page] || '/';
+      history.pushState({page}, document.title, url);
+    } catch(e){ /* pushState may fail on file:// protocol */ }
   }
   if(page === 'blog' && typeof renderBlogGrid === 'function') renderBlogGrid('all');
   if(page === 'cases') {
@@ -997,13 +1002,16 @@ function _initRoute(){
   var params = new URLSearchParams(window.location.search);
   var redirectPath = params.get('p');
   var path = redirectPath || window.location.pathname;
+  // Also support hash-based routes as fallback
+  var hash = window.location.hash.replace('#','');
   var pathToPage = {'/casestudies':'cases','/contact':'contact','/blog':'blog'};
-  var initPage = pathToPage[path] || 'main';
+  var hashToPage = {'casestudies':'cases','cases':'cases','contact':'contact','blog':'blog'};
+  var initPage = pathToPage[path] || hashToPage[hash] || 'main';
   if(initPage !== 'main'){
-    history.replaceState({page:initPage}, document.title, path);
+    try { history.replaceState({page:initPage}, document.title, path); } catch(e){}
     showPage(initPage, false);
   } else {
-    history.replaceState({page:'main'}, document.title, '/');
+    try { history.replaceState({page:'main'}, document.title, '/'); } catch(e){}
   }
 }
 // Wait for full page load (all scripts parsed) before routing
@@ -2303,7 +2311,6 @@ function submitContactForm(e){
         <a href="/" onclick="if(typeof showPage==='function'){showPage('main');return false;}">Our Method</a>
         <a href="/" onclick="if(typeof showPage==='function'){showPage('main');return false;}">Why Now</a>
         <a href="/" onclick="if(typeof showPage==='function'){showPage('main');return false;}">The Gap</a>
-        <a href="/blog">Our Blog</a>
       </div>
     </div>
     <div>
